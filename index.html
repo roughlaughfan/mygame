@@ -826,13 +826,53 @@
     });
 
 
-    // スマホ操作（タッチ対応）
-    document.getElementById("leftBtn").addEventListener("touchstart", () => { if (gameRunning) leftPressed = true; });
-    document.getElementById("rightBtn").addEventListener("touchstart", () => { if (gameRunning) rightPressed = true; });
-    document.getElementById("jumpBtn").addEventListener("touchstart", () => { if (gameRunning) player.jump(); });
+    // ========= スマホ操作（マルチタッチ対応） =========
+    let activeTouches = {
+      left: null,
+      right: null
+    };
 
-    document.getElementById("leftBtn").addEventListener("touchend", () => { leftPressed = false; });
-    document.getElementById("rightBtn").addEventListener("touchend", () => { rightPressed = false; });
+    document.getElementById("leftBtn").addEventListener("touchstart", e => {
+      e.preventDefault();
+      if (!gameRunning) return;
+      if (activeTouches.left === null) {
+        activeTouches.left = e.changedTouches[0].identifier;
+        leftPressed = true;
+      }
+    });
+
+    document.getElementById("leftBtn").addEventListener("touchend", e => {
+      [...e.changedTouches].forEach(touch => {
+        if (touch.identifier === activeTouches.left) {
+          leftPressed = false;
+          activeTouches.left = null;
+        }
+      });
+    });
+
+    document.getElementById("rightBtn").addEventListener("touchstart", e => {
+      e.preventDefault();
+      if (!gameRunning) return;
+      if (activeTouches.right === null) {
+        activeTouches.right = e.changedTouches[0].identifier;
+        rightPressed = true;
+      }
+    });
+
+    document.getElementById("rightBtn").addEventListener("touchend", e => {
+      [...e.changedTouches].forEach(touch => {
+        if (touch.identifier === activeTouches.right) {
+          rightPressed = false;
+          activeTouches.right = null;
+        }
+      });
+    });
+
+    // ジャンプは単発なので単純でOK
+    document.getElementById("jumpBtn").addEventListener("touchstart", e => {
+      e.preventDefault();
+      if (gameRunning) player.jump();
+    });
 
     // ========= ボタン =========
     document.getElementById("startBtn").onclick = startGame;
@@ -851,6 +891,7 @@
 
 
 </html>
+
 
 
 
