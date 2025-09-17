@@ -502,7 +502,8 @@
             bgm: new Audio("sounds/bgm.mp3"),
             bgm_easy: new Audio("sounds/bgm.mp3"),
             bgm_normal: new Audio("sounds/bgm.mp3"),
-            bgm_hard: new Audio("sounds/bgm.mp3")
+            bgm_hard: new Audio("sounds/bgm.mp3"),
+            star: new Audio("sounds/star.mp3")
         };
 
         // 音を重ねて鳴らすために毎回 clone して再生
@@ -541,21 +542,27 @@
 
         function setBackgroundShuffledWithFlip() {
             let img;
-            const setting = difficultySettings[currentDifficulty]; // 👈 この行を追加
+            const setting = difficultySettings[currentDifficulty];
 
             if (!firstBgUsed) {
-                // ★ 最初だけ固定の背景を使用
+                // ★ 最初だけ難易度ごとの固定背景を使用
                 img = setting.bgFirst;
                 firstBgUsed = true;
             } else {
                 // 画像が尽きたら再シャッフル
                 if (shuffledImages.length === 0) {
-                    shuffledImages = shuffleArray(bgImages);
+                    // 連続で同じ画像が出ないように再シャッフル
+                    do {
+                        shuffledImages = shuffleArray(bgImages);
+                    } while (shuffledImages[0] === lastUsedImage);
                 }
 
                 // 次の画像を取り出し
                 img = shuffledImages.shift();
             }
+
+            // 今回使った画像を記憶
+            lastUsedImage = img;
 
             // 0 → 180度 回転（裏側へ）
             bgLayer.style.transform = "rotateY(180deg)";
@@ -568,7 +575,6 @@
                 bgLayer.style.transform = "rotateY(360deg)";
             }, 300);
         }
-
         function resetBackgroundWithFlip() {
             // 0 → 180度 回転
             bgLayer.style.transform = "rotateY(180deg)";
@@ -588,6 +594,7 @@
         const gravity = 1;
         const difficultyDisplay = document.getElementById("difficultyDisplay");
         let defaultBgPath = "";
+        let lastUsedImage = "";
 
         // ========= プレイヤー =========
         class Player {
@@ -1000,7 +1007,7 @@
                 maxSpeed: 9,
                 speedInterval: 20,
                 dropIntervalBase: 400, // 👈 基準間隔（ms）を追加
-                dropIntervalReduction: 100, // 👈 減少量（ms）を追加
+                dropIntervalReduction: 200, // 👈 減少量（ms）を追加
                 bgFirst: "images/hint_bg.png",
                 bgImages: ["images/bg01.png", "images/bg02.png", "images/bg03.png"],
                 bgm: sounds.bgm_easy,
@@ -1019,7 +1026,7 @@
                 maxSpeed: 8,
                 speedInterval: 20,
                 dropIntervalBase: 600,
-                dropIntervalReduction: 100,
+                dropIntervalReduction: 200,
                 bgFirst: "images/hint_bg02.png",
                 bgImages: ["images/bg04.png", "images/bg05.png", "images/bg06.png"],
                 bgm: sounds.bgm_normal,
@@ -1038,7 +1045,7 @@
                 maxSpeed: 7,
                 speedInterval: 20,
                 dropIntervalBase: 1000,
-                dropIntervalReduction: 100,
+                dropIntervalReduction: 200,
                 bgFirst: "images/hint_bg03.png",
                 bgImages: ["images/bg07.png", "images/bg08.png", "images/bg08.png"],
                 bgm: sounds.bgm_hard,
@@ -1160,7 +1167,7 @@
                         playSound(sounds.item);
                     } else if (item.type === "star") {
                         score += 50000000;
-                        playSound(sounds.item);
+                        playSound(sounds.star);
                     } else if (item.type === "heart") {
                         if (lives < 3) { // ★ 最大値以上は増えない
                             lives++;
@@ -1185,7 +1192,7 @@
 
             // ★ クリア判定
             if (score >= 10000000000) {
-                endGame("ゲームクリア！");
+                endGame("100億点達成！");
             }
         }
 
