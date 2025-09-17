@@ -8,6 +8,7 @@
     <link href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap');
+
         body {
             margin: 0;
             overflow: hidden;
@@ -264,15 +265,7 @@
             color: #0054ed;
         }
 
-        #score,
-        #hearts,
-        #difficultyDisplay,
-        h1,
-        h2,
-        p,
-        h1+p,
-        h2+p,
-        p.img {
+        #main_wrap *:not(.btn, .btn-sns) {
             user-select: none;
         }
 
@@ -301,6 +294,7 @@
                 width: auto;
                 min-height: 350px;
             }
+
             h1 {
                 font-size: 3.5vh;
             }
@@ -317,23 +311,29 @@
             .x_share {
                 font-size: 3vh;
             }
+
             p.img {
                 text-align: center;
             }
-            p.img img{
+
+            p.img img {
                 width: 80%;
             }
+
             .modal {
                 padding: 2.8vh;
             }
+
             #hearts img {
                 width: 3.5vh;
                 height: 3.5vh;
             }
+
             #difficultyDisplay {
                 left: 40%;
             }
         }
+
         @media (max-width: 479px) {
             #main .main_wrap {
                 margin: 0 auto auto;
@@ -1224,7 +1224,7 @@
             document.getElementById("gameOverScreen").style.display = "none";
             document.getElementById("clearScreen").style.display = "none";
             document.getElementById("difficultyModal").style.display = "none";
-            if (/iPad|iPhone|Android/i.test(navigator.userAgent)) {
+            if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
                 document.getElementById("controls").style.display = "flex";
             }
             // 🎯 先に難易度設定を反映
@@ -1259,12 +1259,12 @@
             currentBgm = setting.bgm; // 新しいBGMをセット
 
             if (currentBgm) {
-            // BGMのループと音量を設定
-            currentBgm.loop = true;
-            currentBgm.volume = 0.1; // 音量調整（0.0〜1.0）
+                // BGMのループと音量を設定
+                currentBgm.loop = true;
+                currentBgm.volume = 0.1; // 音量調整（0.0〜1.0）
 
-            currentBgm.currentTime = 0;
-            currentBgm.play();
+                currentBgm.currentTime = 0;
+                currentBgm.play();
             }
         }
 
@@ -1299,21 +1299,38 @@
             }
 
             // ★ X共有リンクを生成
-            const gameUrl = encodeURIComponent("https://roughlaughfan.github.io/mygame/");
+            //const gameUrl = encodeURIComponent("https://roughlaughfan.github.io/mygame/");
+            const gameUrl = encodeURIComponent("https://www.google.com/?hl=ja");
             const scoreMessage = `牡蠣サーモンキャッチゲームでスコア${score}点を達成しました！`;
             const hashtags = ["牡蠣サーモンキャッチゲーム", "藤崎団活動報告", "藤崎未来生誕祭2025"];
 
             const formattedHashtags = hashtags.map(tag => `#${tag}`).join(" ");
 
             const shareText = encodeURIComponent(scoreMessage + "\n" + formattedHashtags);
-            const shareUrl = `https://twitter.com/intent/tweet?text=${shareText}&url=${gameUrl}`;
 
-            // ★ ボタンにリンクを設定
-            document.getElementById("shareBtn").onclick = () => {
-                window.open(shareUrl, "_blank");
+            // アプリ用とWeb版用のURLを両方生成
+            const shareUrlApp = `twitter://post?text=${shareText}&url=${gameUrl}`;
+            const shareUrlWeb = `https://twitter.com/intent/tweet?text=${shareText}&url=${gameUrl}`;
+
+            // ボタンにクリックイベントを設定
+            const shareBtn = document.getElementById("shareBtn");
+            const shareBtnTop = document.getElementById("shareBtn_top");
+
+            // アプリがあればアプリで、なければWeb版で開く
+            shareBtn.onclick = () => {
+                // アプリのURLスキームを試行
+                window.open(shareUrlApp, "_blank");
+                // わずかな遅延後、アプリが開かなかった場合にWeb版を開く
+                setTimeout(() => {
+                    window.open(shareUrlWeb, "_blank");
+                }, 500); // 👈 500ミリ秒後にWeb版を開く
             };
-            document.getElementById("shareBtn_top").onclick = () => {
-                window.open(shareUrl, "_blank");
+
+            shareBtnTop.onclick = () => {
+                window.open(shareUrlApp, "_blank");
+                setTimeout(() => {
+                    window.open(shareUrlWeb, "_blank");
+                }, 500);
             };
 
         }
