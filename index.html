@@ -7,10 +7,15 @@
     <title>牡蠣サーモンキャッチゲーム</title>
     <link href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap');
         body {
             margin: 0;
             overflow: hidden;
             background: #f0f0f0;
+            font-family: "Noto Sans JP", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
         }
 
         #main {
@@ -25,14 +30,14 @@
         #main .main_wrap {
             width: 100%;
             max-width: 480px;
-            height: 100%;
-            max-height: 640px;
+            height: auto;
             margin: auto;
             position: relative;
             perspective: 1000px;
             overflow: hidden;
             background: url("images/start.png") no-repeat center center;
             background-size: 100% auto;
+            aspect-ratio: 3 / 4;
         }
 
         canvas {
@@ -40,6 +45,9 @@
             margin: auto;
             position: relative;
             z-index: 1;
+            height: 100%;
+            width: auto;
+            aspect-ratio: 3 / 4;
         }
 
         #bgLayer {
@@ -287,6 +295,45 @@
             width: 80%;
         }
 
+        @media (max-height: 639px) {
+            #main .main_wrap {
+                height: 100%;
+                width: auto;
+                min-height: 350px;
+            }
+            h1 {
+                font-size: 3.5vh;
+            }
+
+            h2 {
+                font-size: 3.2vh;
+            }
+
+            h1+p,
+            h2+p,
+            .btn,
+            #score,
+            #difficultyDisplay,
+            .x_share {
+                font-size: 3vh;
+            }
+            p.img {
+                text-align: center;
+            }
+            p.img img{
+                width: 80%;
+            }
+            .modal {
+                padding: 2.8vh;
+            }
+            #hearts img {
+                width: 3.5vh;
+                height: 3.5vh;
+            }
+            #difficultyDisplay {
+                left: 40%;
+            }
+        }
         @media (max-width: 479px) {
             #main .main_wrap {
                 margin: 0 auto auto;
@@ -330,7 +377,7 @@
 
 <body>
     <div id="main">
-        <div class="main_wrap">
+        <div class="main_wrap" id="main_wrap">
             <!-- スタート画面 -->
             <div id="startScreen">
                 <h1>牡蠣サーモンキャッチ</h1>
@@ -1177,7 +1224,7 @@
             document.getElementById("gameOverScreen").style.display = "none";
             document.getElementById("clearScreen").style.display = "none";
             document.getElementById("difficultyModal").style.display = "none";
-            if (/Mobi|Android/i.test(navigator.userAgent)) {
+            if (/iPad|iPhone|Android/i.test(navigator.userAgent)) {
                 document.getElementById("controls").style.display = "flex";
             }
             // 🎯 先に難易度設定を反映
@@ -1212,8 +1259,12 @@
             currentBgm = setting.bgm; // 新しいBGMをセット
 
             if (currentBgm) {
-                currentBgm.currentTime = 0;
-                currentBgm.play();
+            // BGMのループと音量を設定
+            currentBgm.loop = true;
+            currentBgm.volume = 0.1; // 音量調整（0.0〜1.0）
+
+            currentBgm.currentTime = 0;
+            currentBgm.play();
             }
         }
 
@@ -1279,6 +1330,7 @@
                 // 🎯 新しい計算式
                 const interval = Math.max(300, setting.dropIntervalBase / speedLevel);
                 dropInterval = setInterval(spawnItem, interval);
+
             }
         }
 
@@ -1393,6 +1445,7 @@
             document.getElementById("clearScreen").style.display = "none";
             document.getElementById("startScreen").style.display = "flex";
         };
+
     </script>
 </body>
 
