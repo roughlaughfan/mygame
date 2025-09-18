@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
     <title>牡蠣サーモンキャッチゲーム</title>
     <link href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" rel="stylesheet">
+    <link rel="shortcut　icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" type="image/png" href="images/android-touch-icon.png" sizes="192x192">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap');
 
@@ -160,6 +163,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            -webkit-touch-callout: none;
         }
 
         #leftRight {
@@ -187,6 +191,7 @@
             cursor: pointer;
             transition: opacity 0.3s ease;
             user-select: none;
+            -webkit-touch-callout: none;
         }
 
         .x_share {
@@ -203,6 +208,7 @@
             padding: 1rem;
             display: inline-block;
             cursor: pointer;
+            -webkit-touch-callout: none;
         }
 
         .svg-icon {
@@ -265,7 +271,7 @@
             color: #0054ed;
         }
 
-        #main_wrap *:not(.btn, .btn-sns) {
+        #main * {
             user-select: none;
         }
 
@@ -286,6 +292,7 @@
         .modal .btn {
             margin: 10px auto;
             width: 80%;
+            
         }
 
         @media (max-height: 639px) {
