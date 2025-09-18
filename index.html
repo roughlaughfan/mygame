@@ -1306,13 +1306,10 @@
             }
 
             // ★ X共有リンクを生成
-            //const gameUrl = encodeURIComponent("https://roughlaughfan.github.io/mygame/");
-            const gameUrl = encodeURIComponent("https://www.google.com/?hl=ja");
+            const gameUrl = encodeURIComponent("https://www.google.com/?hl=ja"); // ゲームを公開するURLに置き換えてください
             const scoreMessage = `牡蠣サーモンキャッチゲームでスコア${score}点を達成しました！`;
             const hashtags = ["牡蠣サーモンキャッチゲーム", "藤崎団活動報告", "藤崎未来生誕祭2025"];
-
             const formattedHashtags = hashtags.map(tag => `#${tag}`).join(" ");
-
             const shareText = encodeURIComponent(scoreMessage + "\n" + formattedHashtags);
 
             // アプリ用とWeb版用のURLを両方生成
@@ -1325,21 +1322,23 @@
 
             // アプリがあればアプリで、なければWeb版で開く
             shareBtn.onclick = () => {
-                // アプリのURLスキームを試行
-                window.open(shareUrlApp, "_blank");
-                // わずかな遅延後、アプリが開かなかった場合にWeb版を開く
-                setTimeout(() => {
-                    window.open(shareUrlWeb, "_blank");
-                }, 500); // 👈 500ミリ秒後にWeb版を開く
+                // PCやアプリがない場合に備え、まずWeb版を開く
+                const newWindow = window.open(shareUrlWeb, "_blank");
+
+                // スマホでアプリがインストールされていれば、そちらを優先
+                if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) && newWindow) {
+                    // アプリへのリダイレクトを試行
+                    newWindow.location.href = shareUrlApp;
+                }
             };
 
             shareBtnTop.onclick = () => {
-                window.open(shareUrlApp, "_blank");
-                setTimeout(() => {
-                    window.open(shareUrlWeb, "_blank");
-                }, 500);
+                const newWindow = window.open(shareUrlWeb, "_blank");
+                if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) && newWindow) {
+                    newWindow.location.href = shareUrlApp;
+                }
             };
-
+        }
         }
 
         // ========= アイテム出現間隔調整 =========
